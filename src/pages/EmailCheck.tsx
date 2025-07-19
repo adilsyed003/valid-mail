@@ -3,19 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { 
-  Mail, 
-  Search, 
-  CheckCircle, 
-  XCircle, 
-  Shield, 
-  Globe, 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Mail,
+  Search,
+  CheckCircle,
+  XCircle,
+  Shield,
+  Globe,
   ChevronDown,
   ArrowLeft,
   Loader2,
   Server,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -44,7 +48,7 @@ const EmailCheck = () => {
   const [showTechnical, setShowTechnical] = useState({
     mx: false,
     spf: false,
-    dmarc: false
+    dmarc: false,
   });
 
   const validateEmail = async () => {
@@ -52,20 +56,23 @@ const EmailCheck = () => {
       toast({
         title: "Error",
         description: "Please enter an email address",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8081/validate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL + "validate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to validate email");
@@ -77,7 +84,7 @@ const EmailCheck = () => {
       toast({
         title: "Error",
         description: "Failed to validate email. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -98,7 +105,11 @@ const EmailCheck = () => {
     );
   };
 
-  const getStatusBadge = (status: boolean, trueText: string, falseText: string) => {
+  const getStatusBadge = (
+    status: boolean,
+    trueText: string,
+    falseText: string
+  ) => {
     return (
       <Badge variant={status ? "default" : "destructive"} className="ml-2">
         {status ? trueText : falseText}
@@ -140,7 +151,8 @@ const EmailCheck = () => {
             Email Validation Tool
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Enter an email address to validate its authenticity, security, and deliverability
+            Enter an email address to validate its authenticity, security, and
+            deliverability
           </p>
         </div>
 
@@ -200,22 +212,30 @@ const EmailCheck = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Email Address</span>
+                      <span className="text-muted-foreground">
+                        Email Address
+                      </span>
                       <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
                         {result.email}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Domain</span>
                       <span className="font-semibold">{result.domain}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Disposable Email</span>
+                      <span className="text-muted-foreground">
+                        Disposable Email
+                      </span>
                       <div className="flex items-center">
                         {getStatusIcon(!result.is_disposable)}
-                        {getStatusBadge(!result.is_disposable, "Not Disposable", "Disposable")}
+                        {getStatusBadge(
+                          !result.is_disposable,
+                          "Not Disposable",
+                          "Disposable"
+                        )}
                       </div>
                     </div>
                   </div>
@@ -233,15 +253,25 @@ const EmailCheck = () => {
                       <span className="text-muted-foreground">SPF Record</span>
                       <div className="flex items-center">
                         {getStatusIcon(result.has_spf)}
-                        {getStatusBadge(result.has_spf, "Configured", "Missing")}
+                        {getStatusBadge(
+                          result.has_spf,
+                          "Configured",
+                          "Missing"
+                        )}
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">DMARC Record</span>
+                      <span className="text-muted-foreground">
+                        DMARC Record
+                      </span>
                       <div className="flex items-center">
                         {getStatusIcon(result.has_dmarc)}
-                        {getStatusBadge(result.has_dmarc, "Configured", "Missing")}
+                        {getStatusBadge(
+                          result.has_dmarc,
+                          "Configured",
+                          "Missing"
+                        )}
                       </div>
                     </div>
                   </div>
@@ -286,7 +316,9 @@ const EmailCheck = () => {
                   {/* MX Records */}
                   <Collapsible
                     open={showTechnical.mx}
-                    onOpenChange={(open) => setShowTechnical(prev => ({ ...prev, mx: open }))}
+                    onOpenChange={(open) =>
+                      setShowTechnical((prev) => ({ ...prev, mx: open }))
+                    }
                   >
                     <CollapsibleTrigger asChild>
                       <Button
@@ -313,7 +345,9 @@ const EmailCheck = () => {
                   {/* SPF Records */}
                   <Collapsible
                     open={showTechnical.spf}
-                    onOpenChange={(open) => setShowTechnical(prev => ({ ...prev, spf: open }))}
+                    onOpenChange={(open) =>
+                      setShowTechnical((prev) => ({ ...prev, spf: open }))
+                    }
                   >
                     <CollapsibleTrigger asChild>
                       <Button
@@ -340,7 +374,9 @@ const EmailCheck = () => {
                   {/* DMARC Records */}
                   <Collapsible
                     open={showTechnical.dmarc}
-                    onOpenChange={(open) => setShowTechnical(prev => ({ ...prev, dmarc: open }))}
+                    onOpenChange={(open) =>
+                      setShowTechnical((prev) => ({ ...prev, dmarc: open }))
+                    }
                   >
                     <CollapsibleTrigger asChild>
                       <Button
@@ -350,7 +386,11 @@ const EmailCheck = () => {
                         <div className="flex items-center space-x-2">
                           <Shield className="w-4 h-4" />
                           <span>DMARC Records</span>
-                          {getStatusBadge(result.has_dmarc, "Found", "Not Found")}
+                          {getStatusBadge(
+                            result.has_dmarc,
+                            "Found",
+                            "Not Found"
+                          )}
                         </div>
                         <ChevronDown className="w-4 h-4" />
                       </Button>
